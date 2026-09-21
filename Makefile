@@ -58,3 +58,18 @@ kafka-topics:  ## List Kafka topics
 kafka-describe:  ## Describe all topics (partitions, replicas)
 	@docker compose --env-file .env -f docker/compose.yaml exec kafka \
 	  /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe
+
+.PHONY: spark-ui spark-submit
+
+spark-ui:  ## Print Spark UI URLs
+	@echo "Master UI:   http://localhost:18080"
+	@echo "Worker-1 UI: http://localhost:18081"
+	@echo "Worker-2 UI: http://localhost:18082"
+
+spark-submit:  ## Run a job: make spark-submit J=hello.py
+	@docker compose --env-file .env -f docker/compose.yaml exec spark-master \
+	  /opt/spark/bin/spark-submit \
+	    --master spark://spark-master:7077 \
+	    --conf spark.executor.memory=512m \
+	    --conf spark.executor.cores=1 \
+	    /opt/spark-jobs/$(J)
