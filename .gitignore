@@ -1,0 +1,13 @@
+# Python
+__pycache__/  *.py[cod]  .venv/  venv/  .pytest_cache/  *.egg-info/
+
+# Secrets
+.env  .env.local  secrets/  !.env.example
+
+# Data & artifacts — the whole reason this file exists
+data/  artifacts/  checkpoints/  warehouse/
+*.parquet  *.delta  *.log  *.crc
+docker/volumes/  docker/postgres/data/  docker/minio/data/  docker/kafka/data/
+
+# IDE / OS
+.vscode/  .idea/  *.swp  .DS_Store
