@@ -24,3 +24,28 @@ scaffold:  ## (Re)create directory tree — idempotent
 
 clean:  ## Remove python caches
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+# Append to ~/shopease-mega-platform/Makefile
+COMPOSE := docker compose --env-file .env -f docker/compose.yaml
+
+.PHONY: up down logs psql ps
+
+up:  ## Start the stack
+	$(COMPOSE) up -d
+
+down:  ## Stop the stack (data volume survives)
+	$(COMPOSE) down
+
+logs:  ## Tail logs (all services or: make logs S=postgres)
+	$(COMPOSE) logs -f $(S)
+
+ps:  ## Show running services
+	$(COMPOSE) ps
+
+psql:  ## Open psql in the running postgres container
+	$(COMPOSE) exec postgres psql -U $${POSTGRES_USER} -d $${POSTGRES_DB}
+
+.PHONY: mc-ls
+
+mc-ls:  ## List MinIO buckets
+	@docker compose --env-file .env -f docker/compose.yaml exec minio \
+	  sh -c 'mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null && mc ls local'
