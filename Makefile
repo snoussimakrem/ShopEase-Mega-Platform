@@ -49,3 +49,12 @@ psql:  ## Open psql in the running postgres container
 mc-ls:  ## List MinIO buckets
 	@docker compose --env-file .env -f docker/compose.yaml exec minio \
 	  sh -c 'mc alias set local http://localhost:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD >/dev/null && mc ls local'
+.PHONY: kafka-topics kafka-describe
+
+kafka-topics:  ## List Kafka topics
+	@docker compose --env-file .env -f docker/compose.yaml exec kafka \
+	  /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+kafka-describe:  ## Describe all topics (partitions, replicas)
+	@docker compose --env-file .env -f docker/compose.yaml exec kafka \
+	  /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe
